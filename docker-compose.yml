@@ -1,0 +1,31 @@
+version: '2'
+
+services:
+  web:
+#    image: php:apache
+    build: ./php-apache
+    ports:
+      - "80:80"
+    volumes:
+# Add your project files in ./var/www/html
+      - ./var/www/html:/var/www/html
+    links:
+      - db:db
+  db:
+    image: mysql
+    volumes:
+# Database data will be written to ./var/lib/mysql
+      - ./var/lib/mysql:/var/lib/mysql:rw
+# [Optional] Add SQL files to ./mysql/ and uncomment the line below to initialize the database
+#      - ./mysql/:/docker-entrypoint-initdb.d/:ro
+    ports:
+      - "3306:3306"
+    environment:
+# [Optional] Change MySQL root password
+      - MYSQL_ROOT_PASSWORD=root
+  myadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - "8080:80"
+    links:
+      - db:db
